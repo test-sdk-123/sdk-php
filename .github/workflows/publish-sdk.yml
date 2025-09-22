@@ -1,0 +1,60 @@
+name: Publish SDK on Release Merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  publish-php:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Extract version from branch name
+        id: extract_version
+        run: |
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          VERSION="${BRANCH#release/v}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Update composer.json version
+        run: |
+          if [ -f "composer.json" ]; then
+            jq '.version = "${{ steps.extract_version.outputs.VERSION }}"' composer.json > tmp.json && mv tmp.json composer.json
+          fi
+          
+      - name: Create and push tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add composer.json
+          git commit -m "chore: bump version to ${{ steps.extract_version.outputs.VERSION }}" || true
+          git tag -a "v${{ steps.extract_version.outputs.VERSION }}" -m "Release v${{ steps.extract_version.outputs.VERSION }}"
+          git push origin "v${{ steps.extract_version.outputs.VERSION }}"
+          
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.extract_version.outputs.VERSION }}
+          release_name: Release v${{ steps.extract_version.outputs.VERSION }}
+          body: |
+            ## 🚀 SDK v${{ steps.extract_version.outputs.VERSION }} Released
+            
+            ### Installation
+            ```bash
+            composer require getbrand/sdk:^${{ steps.extract_version.outputs.VERSION }}
+            ```
+            
+            ### Changes
+            See PR #${{ github.event.pull_request.number }} for details.
+          draft: false
+          prerelease: false
