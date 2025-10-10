@@ -1,3 +1,13 @@
+---
+order: 0
+title: Example.com PHP SDK
+languages:
+ - php
+install: 'composer require test/123'
+version: 1.0.4
+github: 'https://'
+packageManagerUrl: ''
+---
 # Example.com PHP SDK
 
 ## Overview
