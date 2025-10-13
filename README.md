@@ -7,7 +7,7 @@ This is an **example** API to demonstrate features of the OpenAPI specification.
 ## Installation
 
 ```bash
-composer require test/123
+composer require test123test234/sdk-php
 ```
 
 ## Configuration
