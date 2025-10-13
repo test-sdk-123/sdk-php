@@ -48,7 +48,7 @@ jobs:
           echo "Using repository URL: $REPO_URL"
           echo "Using username: $USERNAME"
 
-          curl -X POST             -H "Content-Type: application/json"             -d '{"repository":{"url":"'$REPO_URL'"}}'             "https://packagist.org/api/github?username=$USERNAME"
+          curl -X POST             -H "Content-Type: application/json"             -d '{"repository":{"url":"'$REPO_URL'"}}'             "https://packagist.org/api/github?username=$USERNAME&apiToken=${{ secrets.PACKAGIST_TOKEN }}"
         env:
           PACKAGIST_SECRET: ${{ secrets.PACKAGIST_TOKEN }}
 
