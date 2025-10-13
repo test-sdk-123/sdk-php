@@ -3,7 +3,7 @@ order: 0
 title: Example.com PHP SDK
 languages:
  - php
-install: 'composer require test/123'
+install: 'composer require test123test234/sdk-php'
 version: 1.0.4
 github: 'https://'
 packageManagerUrl: ''
@@ -17,7 +17,7 @@ This is an **example** API to demonstrate features of the OpenAPI specification.
 ## Installation
 
 ```bash
-composer require test/123
+composer require test123test234/sdk-php
 ```
 
 ## Configuration
